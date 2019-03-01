@@ -21,6 +21,7 @@ import com.netflix.conductor.server.RedisClusterModule;
 import com.netflix.conductor.server.RedisSentinelModule;
 import com.netflix.conductor.server.ServerModule;
 import com.netflix.conductor.server.SwaggerModule;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,10 +112,12 @@ public class ModulesProvider implements Provider<List<AbstractModule>> {
 
         ExternalPayloadStorageType externalPayloadStorageType = null;
         String externalPayloadStorageString = configuration.getProperty("workflow.external.payload.storage", "");
-        try {
-            externalPayloadStorageType = ExternalPayloadStorageType.valueOf(externalPayloadStorageString);
-        } catch (IllegalArgumentException e) {
-            logger.info("External payload storage is not configured, provided: {}, supported values are: {}", externalPayloadStorageString, Arrays.toString(ExternalPayloadStorageType.values()), e);
+        if(StringUtils.isNotEmpty(externalPayloadStorageString)){
+            try {
+                externalPayloadStorageType = ExternalPayloadStorageType.valueOf(externalPayloadStorageString);
+            } catch (IllegalArgumentException e) {
+                logger.info("External payload storage is not configured, provided: {}, supported values are: {}", externalPayloadStorageString, Arrays.toString(ExternalPayloadStorageType.values()), e);
+            }
         }
 
         if (externalPayloadStorageType == ExternalPayloadStorageType.S3) {
