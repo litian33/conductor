@@ -26,7 +26,7 @@ dependencies {
     compile project(':conductor-mysql-persistence')
     compile project(':conductor-cassandra-persistence')
     compile project(':conductor-contribs')
-    compile project(':conductor-es5-persistence')
+    compile project(':conductor-es6-persistence')
     compile project(':conductor-grpc-server')
 
     compile "com.netflix.runtime:health-guice:${revHealth}"
@@ -83,5 +83,5 @@ task server(type: JavaExec) {
     systemProperties System.properties
     main = 'com.netflix.conductor.bootstrap.Main'
     classpath = sourceSets.test.runtimeClasspath
-     args '/home/litian/program/conductor/mysql.properties','/home/litian/program/conductor/log4j.properties'
+     args '/home/litian/program/conductor/mysql_rocket.properties','/home/litian/program/conductor/log4j.properties'
 }

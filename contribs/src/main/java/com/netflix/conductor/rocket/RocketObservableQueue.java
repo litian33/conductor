@@ -76,9 +76,11 @@ public class RocketObservableQueue implements ObservableQueue {
         Properties producerProps = new Properties();
         Properties consumerProps = new Properties();
         consumerProps.put("group.id", queueName + "_group");
-        String serverId = config.getServerId();
-        consumerProps.put("consumer.id", queueName + "_consumer_" + serverId);
-        producerProps.put("producer.id", queueName + "_producer_" + serverId);
+//        String serverId = config.getServerId();
+//        consumerProps.put("consumer.id", queueName + "_consumer_" + serverId);
+//        producerProps.put("producer.id", queueName + "_producer_" + serverId);
+        consumerProps.put("consumer.id", queueName + "_consumer");
+        producerProps.put("producer.id", queueName + "_producer");
 
         Map<String, Object> configMap = config.getAll();
         if (Objects.isNull(configMap)) {
@@ -109,6 +111,7 @@ public class RocketObservableQueue implements ObservableQueue {
             producer.setNamesrvAddr(mqServer);
             producer.start();
 
+            // TODO 这里的consumerGroup应该不带有主机信息，使用集群消费，一个消息只被消费一次，否则会重复处理（待验证）
             consumer = new DefaultMQPullConsumer(consumerGroup);
             consumer.setNamesrvAddr(mqServer);
             consumer.start();
