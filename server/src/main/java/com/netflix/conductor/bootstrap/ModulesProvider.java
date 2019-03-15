@@ -2,6 +2,7 @@ package com.netflix.conductor.bootstrap;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.ProvisionException;
+import com.google.inject.util.Modules;
 import com.netflix.conductor.cassandra.CassandraModule;
 import com.netflix.conductor.common.utils.ExternalPayloadStorage;
 import com.netflix.conductor.contribs.http.HttpTask;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 // TODO Investigate whether this should really be a ThrowingProvider.
 public class ModulesProvider implements Provider<List<AbstractModule>> {
     private static final Logger logger = LoggerFactory.getLogger(ModulesProvider.class);
@@ -48,12 +51,8 @@ public class ModulesProvider implements Provider<List<AbstractModule>> {
 
     @Override
     public List<AbstractModule> get() {
-        List<AbstractModule> modulesToLoad = new ArrayList<>();
-
-        modulesToLoad.addAll(selectModulesToLoad());
-        modulesToLoad.addAll(configuration.getAdditionalModules());
-
-        return modulesToLoad;
+        AbstractModule resolvedModule = (AbstractModule) Modules.override(selectModulesToLoad()).with(configuration.getAdditionalModules());
+        return singletonList(resolvedModule);
     }
 
     private List<AbstractModule> selectModulesToLoad() {
@@ -136,7 +135,7 @@ public class ModulesProvider implements Provider<List<AbstractModule>> {
             });
         }
 
-        new HttpTask(new RestClientManager(), configuration);
+        new HttpTask(new RestClientManager(configuration), configuration);
         new JsonJqTransform();
         modules.add(new ServerModule());
 
