@@ -33,11 +33,22 @@ public class RocketModule extends AbstractModule {
     @Singleton
     @Named("EventQueueProviders")
     public EventQueueProvider getRocketEventQueueProvider(Configuration configuration) {
-        return new RocketEventQueueProvider(configuration);
+        RocketEventQueueProvider provider = new RocketEventQueueProvider(configuration);
+        // 初始化队列提供者的同时，初始化Wait Task的队列
+        initWaitQueue(configuration, provider);
+        return provider;
     }
 
+    // 这里封装的逻辑是对系统Wait Task的支持
+    // 默认有两个队列用于监控接收完成和失败的任务，分别为：
+    // listener_queue_COMPLETED和listener_queue_FAILED
+    // 可以使用配置项workflow.listener.queue.prefix来配置队列名前缀
     @Provides
     public Map<Task.Status, ObservableQueue> getQueues(Configuration config, RocketEventQueueProvider rocket) {
+        return initWaitQueue(config, rocket);
+    }
+
+    private Map<Task.Status, ObservableQueue> initWaitQueue(Configuration config, RocketEventQueueProvider rocket) {
         Task.Status[] statuses = new Task.Status[]{Task.Status.COMPLETED, Task.Status.FAILED};
         Map<Task.Status, ObservableQueue> queues = new HashMap<>();
         for (Task.Status status : statuses) {
