@@ -69,32 +69,32 @@ public class ContribsModule extends AbstractModule {
 		return new AmazonSQSClient(acp);
 	}
 	
-	@Provides
-	public Map<Status, ObservableQueue> getQueues(Configuration config, AWSCredentialsProvider acp) {
-		
-		String stack = "";
-		if(config.getStack() != null && config.getStack().length() > 0) {
-			stack = config.getStack() + "_";
-		}
-		Status[] statuses = new Status[]{Status.COMPLETED, Status.FAILED};
-		Map<Status, ObservableQueue> queues = new HashMap<>();
-		for(Status status : statuses) {
-			String queueName = config.getProperty("workflow.listener.queue.prefix", config.getAppId() + "_sqs_notify_" + stack + status.name());
-			AmazonSQSClient client = new AmazonSQSClient(acp);
-			Builder builder = new SQSObservableQueue.Builder().withClient(client).withQueueName(queueName);
-			
-			String auth = config.getProperty("workflow.listener.queue.authorizedAccounts", "");
-			String[] accounts = auth.split(",");
-			for(String accountToAuthorize : accounts) {
-				accountToAuthorize = accountToAuthorize.trim();
-				if(accountToAuthorize.length() > 0) {
-					builder.addAccountToAuthorize(accountToAuthorize.trim());
-				}
-			}
-			ObservableQueue queue = builder.build();
-			queues.put(status, queue);
-		}
-		
-		return queues;
-	}
+//	@Provides
+//	public Map<Status, ObservableQueue> getQueues(Configuration config, AWSCredentialsProvider acp) {
+//
+//		String stack = "";
+//		if(config.getStack() != null && config.getStack().length() > 0) {
+//			stack = config.getStack() + "_";
+//		}
+//		Status[] statuses = new Status[]{Status.COMPLETED, Status.FAILED};
+//		Map<Status, ObservableQueue> queues = new HashMap<>();
+//		for(Status status : statuses) {
+//			String queueName = config.getProperty("workflow.listener.queue.prefix", config.getAppId() + "_sqs_notify_" + stack + status.name());
+//			AmazonSQSClient client = new AmazonSQSClient(acp);
+//			Builder builder = new SQSObservableQueue.Builder().withClient(client).withQueueName(queueName);
+//
+//			String auth = config.getProperty("workflow.listener.queue.authorizedAccounts", "");
+//			String[] accounts = auth.split(",");
+//			for(String accountToAuthorize : accounts) {
+//				accountToAuthorize = accountToAuthorize.trim();
+//				if(accountToAuthorize.length() > 0) {
+//					builder.addAccountToAuthorize(accountToAuthorize.trim());
+//				}
+//			}
+//			ObservableQueue queue = builder.build();
+//			queues.put(status, queue);
+//		}
+//
+//		return queues;
+//	}
 }
