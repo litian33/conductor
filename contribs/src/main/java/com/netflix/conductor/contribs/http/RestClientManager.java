@@ -52,7 +52,7 @@ public class RestClientManager {
     private final int defaultConnectTimeout;
 
     private NamingService naming;
-    private final Pattern LB_PATTERN = Pattern.compile("((lb)|(LB))://([a-zA-Z0-9_-]+)(/?.*)");
+    private final Pattern LB_PATTERN = Pattern.compile("((lbs?)|(LBS?))://([a-zA-Z0-9_-]+)(/?.*)");
 
     public RestClientManager(Configuration config) {
         this.threadLocalClient = ThreadLocal.withInitial(() -> Client.create());
@@ -122,7 +122,7 @@ public class RestClientManager {
         }
 
         public String initUri(Instance instance) {
-            return String.format("%s://%s:%d%s", "http", instance.getIp(), instance.getPort(), path);
+            return String.format("%s://%s:%d%s", schema.length() > 2 ? "https" : "http", instance.getIp(), instance.getPort(), path);
         }
     }
 }
