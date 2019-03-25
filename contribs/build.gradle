@@ -19,4 +19,6 @@ dependencies {
 	testCompile "org.eclipse.jetty:jetty-server:${revJetteyServer}"
 	testCompile "org.eclipse.jetty:jetty-servlet:${revJettyServlet}"
 	compile "org.apache.rocketmq:rocketmq-client:${revRocketMQ}"
+
+	compile "com.alibaba.nacos:nacos-client:${revNacos}"
 }

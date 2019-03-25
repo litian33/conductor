@@ -162,7 +162,12 @@ public class HttpTask extends WorkflowSystemTask {
 			client.addFilter(new OAuthClientFilter(client.getProviders(), params, secrets));
 		}
 
-		Builder builder = client.resource(input.uri).type(input.contentType);
+		// 如果使用了负载均衡，则需要替换为具体的地址
+		String uri = input.getUri();
+		if(uri.startsWith("lb://")){
+			uri = rcm.convertUri(uri);
+		}
+		Builder builder = client.resource(uri).type(input.contentType);
 
 		if(input.body != null) {
 			builder.entity(input.body);

@@ -60,4 +60,5 @@ ext {
     revSlf4jlog4j = '1.8.0-alpha1'
     revSpectator = '0.68.0'
     revRocketMQ = '4.3.1'
+    revNacos = '0.9.1'
 }
